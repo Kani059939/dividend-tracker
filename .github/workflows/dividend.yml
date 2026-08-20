@@ -1,0 +1,31 @@
+name: Dividend Finder
+
+on:
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: "Enter tickers separated by commas"
+        required: true
+        default: "JEPI, JEPQ, SCHD, VOO"
+
+jobs:
+  dividend-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Run Dividend Finder
+        env:
+          ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
+          TICKERS: ${{ inputs.tickers }}
+        run: python dividend.py
